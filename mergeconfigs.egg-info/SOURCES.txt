@@ -1,0 +1,12 @@
+LICENSE.txt
+README.md
+pyproject.toml
+setup.py
+mergeconfigs/__main__.py
+mergeconfigs/cli.py
+mergeconfigs/config_builder.py
+mergeconfigs.egg-info/PKG-INFO
+mergeconfigs.egg-info/SOURCES.txt
+mergeconfigs.egg-info/dependency_links.txt
+mergeconfigs.egg-info/requires.txt
+mergeconfigs.egg-info/top_level.txt

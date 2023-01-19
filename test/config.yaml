@@ -1,0 +1,10 @@
+#load hosts.yaml
+
+anothervar: 
+  - foobar
+  - as list
+mysite: 
+  ip: http://${hosts@mysite.ip}:80
+  access: readOnly
+
+#include logging.yaml

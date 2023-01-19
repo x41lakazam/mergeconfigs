@@ -1,0 +1,11 @@
+LOG_LEVEL: debug
+LOG_MSG: 'Log:'
+anothervar:
+- foobar
+- as list
+mysite:
+  access: readOnly
+  ip: http://helloworld.com:80
+myvar:
+  ip: lala.com
+  port: 80
