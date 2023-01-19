@@ -1,3 +1,4 @@
+import collections.abc
 from pathlib import Path
 import re
 import yaml
@@ -6,6 +7,15 @@ from yaml import Loader
 
 #VAR_REGEX = r"\${([^|]+?)}"
 VAR_REGEX = r"\${(\w+@[.\w]+)}"
+
+
+def dic_update(d, u):
+    for k, v in u.items():
+        if isinstance(v, collections.abc.Mapping):
+            d[k] = dic_update(d.get(k, {}), v)
+        else:
+            d[k] = v
+    return d
 
 def _get_var(var_name, parent_vars):
     """var_name is in format file@variable"""
@@ -38,7 +48,7 @@ def _resolve_variables(val, content):
         return val
 
     try:
-        val = re.sub(VAR_REGEX, lambda m: _get_var(m.groups()[0], content), val)
+        val = re.sub(VAR_REGEX, lambda m: str(_get_var(m.groups()[0], content)), val)
     except Exception as exc:
         print(f"Error on value {val}: {exc}")
         raise
@@ -46,11 +56,11 @@ def _resolve_variables(val, content):
     return val
 
 
-def _resolve_yaml(file: Path, workdir=Path("."), env="base", parent_vars=None, callers=None):
+def _resolve_yaml(file: Path, workdir=Path("."), env=".", parent_vars=None, callers=None):
     callers = callers or []
     parent_vars = parent_vars or {}
 
-    file_content = yaml.load(open(file.absolute()), Loader=Loader)
+    file_content = yaml.load(open(file.absolute()), Loader=Loader) or {}
 
     file_vars = file_content.copy()
     parent_vars[file.stem] = file_vars
@@ -58,11 +68,12 @@ def _resolve_yaml(file: Path, workdir=Path("."), env="base", parent_vars=None, c
     lines = open(file.absolute()).readlines()
 
     for line in lines:
+        line = line.replace("$$ENV$$", env)
         if line.startswith("#extends"):
             extends_yaml = line.split(" ")[1].strip()
             fpath = workdir.joinpath(extends_yaml)
             content = _resolve_yaml(fpath, workdir, env, parent_vars, callers+[file.stem])
-            content.update(file_content)
+            dic_update(content, file_content)
             file_content = content
 
         elif line.startswith("#include"):
@@ -71,7 +82,7 @@ def _resolve_yaml(file: Path, workdir=Path("."), env="base", parent_vars=None, c
             if fpath.stem in callers:
                 raise RecursionError(f"Circular import of {fpath.name} in {file.name}")
             content = _resolve_yaml(fpath, workdir, env, parent_vars, callers+[file.stem])
-            file_content.update(content)
+            dic_update(content, file_content)
 
         elif line.startswith("#load"):
             load_yaml = line.split(" ")[1].strip()
@@ -87,8 +98,7 @@ def _resolve_yaml(file: Path, workdir=Path("."), env="base", parent_vars=None, c
     return file_content
 
 
-def build_config(filename="config.yaml", workdir=Path("."), env="base"):
-
+def build_config(filename="config.yaml", workdir=Path("."), env="."):
 
     workdir = Path(workdir)
     file = workdir.joinpath(filename)

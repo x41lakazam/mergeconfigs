@@ -8,7 +8,7 @@ except:
 
 setup(
     name='mergeconfigs',
-    version='0.2',
+    version='0.4',
     description='Help developers with config files',
     long_description=long_description,
     url="https://github.com/x41lakazam/mergeconfigs",
