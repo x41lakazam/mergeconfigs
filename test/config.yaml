@@ -7,4 +7,6 @@ mysite:
   ip: http://${hosts@mysite.ip}:80
   access: readOnly
 
+LOG_LEVEL: DEBUG
+
 #include logging.yaml
