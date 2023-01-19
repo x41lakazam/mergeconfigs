@@ -4,7 +4,8 @@ import yaml
 from yaml import Loader
 
 
-VAR_REGEX = r"\${([^|]+?)}"
+#VAR_REGEX = r"\${([^|]+?)}"
+VAR_REGEX = r"\${(\w+@[.\w]+)}"
 
 def _get_var(var_name, parent_vars):
     """var_name is in format file@variable"""
@@ -36,7 +37,11 @@ def _resolve_variables(val, content):
     if not isinstance(val, str):
         return val
 
-    val = re.sub(VAR_REGEX, lambda m: _get_var(m.groups()[0], content), val)
+    try:
+        val = re.sub(VAR_REGEX, lambda m: _get_var(m.groups()[0], content), val)
+    except Exception as exc:
+        print(f"Error on value {val}: {exc}")
+        raise
 
     return val
 
