@@ -84,7 +84,7 @@ def _resolve_yaml(file: Path, workdir=Path("."), env=".", ctx=None, callers=None
             include_content = _resolve_yaml(fpath, workdir, env, ctx, callers + [file.stem])
             common_keys = include_content.keys() & file_content.keys()
             if common_keys:
-                print(f"WARNING: Included file {include_yaml} have common keys with parent file, overwriting: {common_keys=}")
+                print(f"WARNING: Included file {include_yaml} have common keys with parent file, overwriting: {common_keys}")
 
             file_content.update(include_content)
 

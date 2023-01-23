@@ -8,9 +8,11 @@ except:
 
 setup(
     name='mergeconfigs',
-    version='0.4',
+    python_requires=">=3.7",
+    version='0.6',
     description='Help developers with config files',
     long_description=long_description,
+    long_description_content_type="text/markdown", 
     url="https://github.com/x41lakazam/mergeconfigs",
     author='Eyal Chocron',
     maintainer="Eyal Chocron",
@@ -20,5 +22,6 @@ setup(
     packages=['mergeconfigs'],
     install_requires=[
         'click',
+        'pyyaml>=5.1'
     ],
     )
