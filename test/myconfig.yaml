@@ -6,3 +6,4 @@ myvar:
 
 anothervar:
   - newvar
+  - ${this@myvar.ip}

@@ -9,7 +9,7 @@ except:
 setup(
     name='mergeconfigs',
     python_requires=">=3.7",
-    version='0.6',
+    version='0.8',
     description='Help developers with config files',
     long_description=long_description,
     long_description_content_type="text/markdown", 

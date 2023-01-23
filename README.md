@@ -21,8 +21,9 @@ context and can be used as a placeholder.
 - Include the content of another file: `#include path/to/file.yaml`, if the file contain keys 
 that are shared by the current file, it will override it.
 - Use a variable from the context: `${namespace@variable}`, namespace here refer to 
-the name of the file (without its extension) that contain the variable. It supports accessing
-dictionary keys, for example a variable `foo["bar"]` from `logging.yaml` can be used with `${logging@foo.bar}`
+the name of the file (without its extension) that contain the variable. It supports accessing 
+dictionary keys, for example a variable `foo["bar"]` from `logging.yaml` can be used with `${logging@foo.bar}`.
+The current file can be referenced with the special namespace `this`: `${this@myvar}`.
 
 > **Note:** The file is read line by line, which mean if an #include is used in a file, 
 > some values can still be overriden in the following lines.
@@ -174,5 +175,4 @@ overrides one of its attribute, the `mongodb.host` one.
 
 
 # TODO
-- Add the possibility to use the context of the current file, using `${this@variable}`
 - Add support for list indices in variables: `${file@variable.0}`

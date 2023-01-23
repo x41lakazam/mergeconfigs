@@ -61,6 +61,9 @@ def _resolve_yaml(file: Path, workdir=Path("."), env=".", ctx=None, callers=None
     ctx = ctx or {}
 
     file_content = yaml.load(open(file.absolute()), Loader=Loader) or {}
+    # Store the content of the current file under "this" namespace
+    inner_ctx = {"this": file_content}
+    ctx = ctx | inner_ctx
 
     file_vars = file_content.copy()
     ctx[file.stem] = file_vars

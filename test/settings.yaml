@@ -2,6 +2,7 @@ LOG_LEVEL: debug
 LOG_MSG: 'Log:'
 anothervar:
 - newvar
+- lala.com
 mysite:
   access: readOnly
   ip: http://helloworld.com:80
