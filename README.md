@@ -28,6 +28,17 @@ The current file can be referenced with the special namespace `this`: `${this@my
 > **Note:** The file is read line by line, which mean if an #include is used in a file, 
 > some values can still be overriden in the following lines.
 
+# Hierarchy descriptor
+In most cases your configs will follow some hierarachy, we didn't wanna impose anything here so we give to the user the possibility to 
+pass a `hierarchy` file which contain the hierarchical order of the environments. Every environment should be in a single line, with the 
+root level at the top, i.e. if a file is not found in a directory, it will be searched in the directory above him. For example:
+```
+prod
+stage
+dev
+local
+```
+
 # Example
 
 Mergeconfigs use basic templating functions like variables insertion and 
@@ -106,15 +117,22 @@ into other files, adding a `hosts.yaml` file with all the hosts can be very usef
      |  | hosts.yaml
      | local
      |  | hosts.yaml
+     | .hierarchy
 ```
 Then generate a single `settings.yaml` file using: 
 
 ```
-python -m mergeconfigs --workdir config --file core.yaml --env local
+python -m mergeconfigs --workdir config --file core.yaml --env local --hierarchy .hierarchy
 ```
 
 
 Here is the content of the files:
+
+**.hierarchy**
+```
+prod
+local
+```
 
 **core.yaml**
 ```

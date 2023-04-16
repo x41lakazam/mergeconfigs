@@ -1,2 +1,3 @@
-LOG_LEVEL: debug
-LOG_MSG: "Log:"
+log_messages: true
+log_level: info
+log_prefix: "my_app_logger:"

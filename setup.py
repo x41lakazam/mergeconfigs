@@ -9,10 +9,10 @@ except:
 setup(
     name='mergeconfigs',
     python_requires=">=3.7",
-    version='0.8',
+    version='0.10',
     description='Help developers with config files',
     long_description=long_description,
-    long_description_content_type="text/markdown", 
+    long_description_content_type="text/markdown",
     url="https://github.com/x41lakazam/mergeconfigs",
     author='Eyal Chocron',
     maintainer="Eyal Chocron",

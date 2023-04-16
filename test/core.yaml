@@ -1,0 +1,17 @@
+#load $$ENV$$/hosts.yaml
+
+app_name: "MY_APP"
+app_port: 5000
+app_secret_key: "my-very-secret-key"
+
+my_service:
+    health_check_url: "http://${hosts@my_service.host}/check"
+
+mongodb:
+    uri: "mongodb://${hosts@mongodb.host}/my_database?readpreferenceaen=rest"
+    auto_connect: false
+    print_errors: true
+    db_alias: "my_database_alias"
+
+#include logging.yaml
+

@@ -1,0 +1,13 @@
+app_name: MY_APP
+app_port: 5000
+app_secret_key: my-very-secret-key
+log_level: info
+log_messages: true
+log_prefix: 'my_app_logger:'
+mongodb:
+  auto_connect: false
+  db_alias: my_database_alias
+  print_errors: true
+  uri: mongodb://mymongodb.net:27017/my_database?readpreferenceaen=rest
+my_service:
+  health_check_url: http://my_service.com/check

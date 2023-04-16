@@ -1,9 +1,0 @@
-#extends config.yaml
-
-myvar: 
-  ip: "lala.com"
-  port: 80
-
-anothervar:
-  - newvar
-  - ${this@myvar.ip}

@@ -1,3 +1,5 @@
+from typing import List, Optional
+from itertools import pairwise
 import collections.abc
 from pathlib import Path
 import re
@@ -61,6 +63,7 @@ def _resolve_yaml(file: Path, workdir=Path("."), env=".", ctx=None, callers=None
     ctx = ctx or {}
 
     file_content = yaml.load(open(file.absolute()), Loader=Loader) or {}
+
     # Store the content of the current file under "this" namespace
     inner_ctx = {"this": file_content}
     ctx = ctx | inner_ctx
@@ -105,11 +108,50 @@ def _resolve_yaml(file: Path, workdir=Path("."), env=".", ctx=None, callers=None
     return file_content
 
 
-def build_config(filename="config.yaml", workdir=Path("."), env="."):
+def _fill_hierarchy_files(workdir: Path, hierarchy: List[str]) -> List[Path]:
+    files_created = []
+
+    # Gather every file that appear in at least one environment, names are relative to the env dir
+    existing_files = set()
+    for env in hierarchy:
+        envdir = workdir.joinpath(env)
+        existing_files |= set(f.relative_to(envdir) for f in envdir.rglob("*") if f.is_file())
+
+    # In every env dir, create the file pointing to the upper environment if it doesn't exist
+    for env, parent_env in pairwise(hierarchy[::-1]):     # Travel the hierarchy backward (from the leaf to the one before the root)
+        envdir = workdir.joinpath(env)
+
+        # Get every file that is missing
+        files_in_env = set(f.relative_to(envdir) for f in envdir.rglob(f"*") if f.is_file)
+        missing_filenames = existing_files - files_in_env
+
+        # Create those files
+        for f in missing_filenames:
+            filepath = envdir.joinpath(f)
+            filepath.open('w').write(f"#extends {parent_env}/{f}")
+            files_created.append(filepath)
+
+    return files_created
+
+
+
+def build_config(filename="config.yaml", workdir=Path("."), env=".", hierarchy_filename: Optional[str] = None):
+    tmp_files: List[Path] = []
 
     workdir = Path(workdir)
     file = workdir.joinpath(filename)
 
+    # If hierarchy was provided, created the missing files
+    if hierarchy_filename:
+        hierarchy = workdir.joinpath(hierarchy_filename).open().read().splitlines()
+        tmp_files += _fill_hierarchy_files(workdir, hierarchy)
+
+    # Build the configuration dictionary
     full_config_dict = _resolve_yaml(file, workdir, env)
+
+    # Remove temporary files
+    for f in tmp_files:
+        if f.exists():
+            f.unlink()
 
     return full_config_dict
